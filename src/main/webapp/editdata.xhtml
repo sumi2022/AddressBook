@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/mainLayout.xhtml">
+
+
+	<ui:define name="bodyContent" id="form1">
+		<h:panelGrid columns="3" cellpadding="5">
+			<p:commandButton value="Home Page"
+				action="/index?faces-redirect=true" />
+			<p:commandButton value="New Address" type="button"
+				onclick="PF('newAddress').show();" />
+			<p:commandButton value="New Phone" type="button"
+				onclick="PF('newPhone').show();" />
+		</h:panelGrid>
+		<h:form>
+			<h:panelGroup>
+				<p:dataTable id="AddressesTable" var="address"
+					value="#{addressController.addressList}">
+					<f:facet name="header">
+						<h:outputLabel value="Addresses" />
+					</f:facet>
+					<p:column headerText="Id">
+						<h:outputText value="#{address.id}" />
+					</p:column>
+					<p:column headerText="Address" filterBy="#{address.address}">
+						<h:outputText value="#{address.address}" />
+					</p:column>
+					<p:column>
+						<p:commandButton icon="ui-icon-trash" title="Delete"
+							value="Delete" action="/editdata?faces-redirect=true"
+							actionListener="#{addressController.deleteAddress(address)}"
+							update="@form" />
+					</p:column>
+					<p:column>
+						<p:commandButton icon="ui-icon-pencil" title="Edit" value="Edit"
+							update=":form2:updateform"
+							actionListener="#{addressController.setEditAddress(address)}"
+							oncomplete="PF('editAddress').show();" />
+					</p:column>
+				</p:dataTable>
+			</h:panelGroup>
+		</h:form>
+
+		<p:dialog header="Edit address" widgetVar="editAddress"
+			showEffect="explode" hideEffect="bounce">
+			<h:form id="form2">
+				<h:panelGroup id="updateform">
+					<p:panel style="width: 400px;"
+						rendered="#{addressController.editAddress != null}">
+						<p:panelGrid columns="2" style="text-align:center;">
+							<h:outputLabel value="Address: " />
+							<p:inputTextarea rows="3"
+								value="#{addressController.editAddress.address}">
+								<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+							</p:inputTextarea>
+							<f:facet name="footer"
+								style="text-align:center; display: inline-block">
+								<h:commandButton value="Save"
+									action="#{addressController.updateAddress()}" ajax="false" />
+							</f:facet>
+						</p:panelGrid>
+					</p:panel>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="New address" widgetVar="newAddress"
+			showEffect="explode" hideEffect="bounce">
+			<h:form>
+				<p:panel style="width: 400px;">
+					<p:panelGrid columns="4" style="text-align:center;">
+						<h:outputLabel value="Address: " />
+						<p:inputTextarea rows="3"
+							value="#{addressController.newAddress.address}">
+							<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+						</p:inputTextarea>
+						<f:facet name="footer"
+							style="text-align:center; display: inline-block">
+							<h:commandButton value="Save"
+								action="#{addressController.createAddress()}" ajax="false" />
+						</f:facet>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<h:form>
+			<h:panelGroup>
+				<p:dataTable id="PhonesTable" var="phone"
+					value="#{phoneController.phoneList}">
+					<f:facet name="header">
+						<h:outputLabel value="Phones" />
+					</f:facet>
+					<p:column headerText="Id">
+						<h:outputText value="#{phone.id}" />
+					</p:column>
+					<p:column headerText="Title" filterBy="#{phone.title}">
+						<h:outputText value="#{phone.title}" />
+					</p:column>
+					<p:column headerText="Phone" filterBy="#{phone.phoneNumber}">
+						<h:outputText value="#{phone.phoneNumber}" />
+					</p:column>
+					<p:column>
+						<p:commandButton icon="ui-icon-trash" title="Delete"
+							value="Delete" action="/editdata?faces-redirect=true"
+							actionListener="#{phoneController.deletePhone(phone)}"
+							update="@form" />
+					</p:column>
+					<p:column>
+						<p:commandButton icon="ui-icon-pencil" title="Edit" value="Edit"
+							update=":form3:updateform1"
+							actionListener="#{phoneController.setEditPhone(phone)}"
+							oncomplete="PF('editPhone').show();" />
+					</p:column>
+				</p:dataTable>
+			</h:panelGroup>
+		</h:form>
+
+		<p:dialog header="Edit phone" widgetVar="editPhone"
+			showEffect="explode" hideEffect="bounce">
+			<h:form id="form3">
+				<h:panelGroup id="updateform1">
+					<p:panel style="width: 400px;"
+						rendered="#{phoneController.editPhone != null}">
+						<p:panelGrid columns="2" style="text-align:center;">
+							<h:outputLabel value="Address: " />
+							<p:inputText value="#{phoneController.editPhone.title}">
+								<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+							</p:inputText>
+							<h:outputLabel value="Address: " />
+							<p:inputMask value="#{phoneController.editPhone.phoneNumber}"
+								mask="+99(999)9999999" >
+								<f:validateRegex pattern="\+\d{2}\(\d{3}\)\d{7}" />
+							</p:inputMask>
+							<f:facet name="footer"
+								style="text-align:center; display: inline-block">
+								<h:commandButton value="Save"
+									action="#{phoneController.updatePhone()}" ajax="false" />
+							</f:facet>
+						</p:panelGrid>
+					</p:panel>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="New phone" widgetVar="newPhone" showEffect="explode"
+			hideEffect="bounce">
+			<h:form>
+				<p:panel style="width: 400px;">
+					<p:panelGrid columns="2" style="text-align:center;">
+						<h:outputLabel value="Title: " />
+						<p:inputText value="#{phoneController.newPhone.title}">
+							<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+						</p:inputText>
+						<h:outputLabel value="Phone: " />
+						<p:inputMask value="#{phoneController.newPhone.phoneNumber}"
+							mask="+99(999)9999999" >
+							<f:validateRegex pattern="\+\d{2}\(\d{3}\)\d{7}" />
+						</p:inputMask>
+
+						<f:facet name="footer"
+							style="text-align:center; display: inline-block">
+							<h:commandButton value="Save"
+								action="#{phoneController.createPhone()}" ajax="false" />
+						</f:facet>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

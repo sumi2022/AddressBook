@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/mainLayout.xhtml">
+
+
+	<ui:define name="bodyContent">
+		<h:panelGrid columns="1" cellpadding="5">
+			<p:commandButton value="New Person" type="button"
+				onclick="PF('newPerson').show();" />
+		</h:panelGrid>
+		<h:form id="personTableForm">
+			<p:dataTable id="PersonsTable" var="person"
+				value="#{personController.persons}">
+				<f:facet name="header">
+					<h:outputLabel value="Persons" />
+				</f:facet>
+				<p:column headerText="Id" >
+					<h:outputText value="#{person.id}" />
+				</p:column>
+				<p:column headerText="Name" filterBy="#{person.name}" filterMatchMode="contains">
+					<h:outputText value="#{person.name}" />
+				</p:column>
+				<p:column headerText="Surname" filterBy="#{person.surname}" filterMatchMode="contains">
+					<h:outputText value="#{person.surname}" />
+				</p:column>
+				<p:column headerText="Email" filterBy="#{person.email}" filterMatchMode="contains">
+					<h:outputText value="#{person.email}" />
+				</p:column>
+				<p:column>
+					<p:commandButton icon="ui-icon-trash" title="Delete" value="Delete"
+						actionListener="#{personController.deletePerson(person)}"
+						update="@form" />
+				</p:column>
+				<p:column>
+					<p:commandButton icon="ui-icon-pencil" title="Edit" value="Edit"
+						update=":form2:updateform"
+						actionListener="#{personController.setEditPerson(person)}"
+						oncomplete="PF('editPerson').show();" />
+				</p:column>
+				<p:column>
+					<p:commandButton title="List Data" value="List Data"
+						process="@form"
+						action="#{personController.listData(person)}" />
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog header="Edit person" widgetVar="editPerson"
+			showEffect="explode" hideEffect="bounce">
+			<h:form id="form2">
+				<h:panelGroup id="updateform">
+					<p:panel style="width: 400px;"
+						rendered="#{personController.editPerson != null}">
+						<p:panelGrid columns="2" style="text-align:center;">
+							<h:outputLabel value="Name: " />
+							<p:inputText value="#{personController.editPerson.name}" >
+								<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+							</p:inputText>
+							<h:outputLabel value="Surname: " />
+							<p:inputText value="#{personController.editPerson.surname}" >
+								<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+							</p:inputText>
+							<h:outputLabel value="Email: " />
+							<p:inputText value="#{personController.editPerson.email}" >
+								<f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+							</p:inputText>
+							<f:facet name="footer"
+								style="text-align:center; display: inline-block">
+								<h:commandButton value="Save"
+									action="#{personController.updatePerson()}" ajax="false" />
+							</f:facet>
+						</p:panelGrid>
+					</p:panel>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Add new person" widgetVar="newPerson"
+			showEffect="explode" hideEffect="bounce">
+			<h:form>
+				<p:panel style="width: 400px;">
+					<p:panelGrid columns="2" style="text-align:center;">
+						<h:outputLabel value="Name: " />
+						<p:inputText value="#{personController.newPerson.name}" >
+							<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+						</p:inputText>
+						<h:outputLabel value="Surname: " />
+						<p:inputText value="#{personController.newPerson.surname}" >
+							<f:validateRegex pattern="[\w\.-]*[a-zA-Z_]" />
+						</p:inputText>
+						<h:outputLabel value="Email: " />
+						<p:inputText value="#{personController.newPerson.email}" >
+							<f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+						</p:inputText>
+						<f:facet name="footer"
+							style="text-align:center; display: inline-block">
+							<h:commandButton value="Save"
+								action="#{personController.createPerson()}" ajax="false" />
+						</f:facet>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
